@@ -55,8 +55,8 @@
             backgroundColor: color,
           }).showToast();
         },
-        validateEmail(email) {
-          const re = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+       validateEmail(email) {
+          const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           return re.test(email);
         },
         submit() {
