@@ -60,41 +60,32 @@
           return re.test(email);
         },
         submit() {
-          if (!this.html.trim()) {
-            this.toast("⚠️ Enter your HTML!", "linear-gradient(to right, #f43f5e, #f97316)");
-            return;
-          }
+  if (!this.html.trim()) {
+    this.toast("⚠️ Enter your HTML!", "linear-gradient(to right, #f43f5e, #f97316)");
+    return;
+  }
 
-          if (!this.validateEmail(this.email)) {
-            this.toast("⚠️ Enter a valid email!", "linear-gradient(to right, #f43f5e, #f97316)");
-            return;
-          }
+  if (!this.validateEmail(this.email)) {
+    this.toast("⚠️ Enter a valid email!", "linear-gradient(to right, #f43f5e, #f97316)");
+    return;
+  }
 
-          const payload = {
-            html: this.html,
-            email: this.email
-          };
+  const form = new FormData();
+  form.append("html", this.html);
+  form.append("email", this.email);
 
-          axios.post(
-            "https://script.google.com/macros/s/AKfycbw4xdcJoJ7RW1ABx7qasceRlIA7KCx272IfB0U-cli_QdRd1rJJh4ZCqcgTOd4-5YBLeg/exec",
-            payload,
-            {
-              headers: {
-                "Content-Type": "application/json"
-              }
-            }
-          )
-          .then((res) => {
-            console.log(res.data);
-            this.toast("✅ Email sent successfully!", "linear-gradient(to right, #10b981, #22c55e)");
-            this.html = '';
-            this.email = '';
-          })
-          .catch((error) => {
-            console.error(error);
-            this.toast("❌ Failed to send email.", "linear-gradient(to right, #ef4444, #f87171)");
-          });
-        }
+  axios.post("https://script.google.com/macros/s/AKfycbw4xdcJoJ7RW1ABx7qasceRlIA7KCx272IfB0U-cli_QdRd1rJJh4ZCqcgTOd4-5YBLeg/exec", form)
+    .then(() => {
+      this.toast("✅ Email sent successfully!", "linear-gradient(to right, #10b981, #22c55e)");
+      this.html = '';
+      this.email = '';
+    })
+    .catch((error) => {
+      console.error(error);
+      this.toast("❌ Failed to send email.", "linear-gradient(to right, #ef4444, #f87171)");
+    });
+}
+
       }
     }).mount('#app');
   </script>
