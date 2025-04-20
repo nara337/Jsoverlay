@@ -55,7 +55,7 @@
             backgroundColor: color,
           }).showToast();
         },
-       validateEmail(email) {
+        validateEmail(email) {
           const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           return re.test(email);
         },
@@ -75,15 +75,25 @@
             email: this.email
           };
 
-          axios.post("https://script.google.com/macros/s/AKfycbx4-R1u3GNmuDd9t6PMMceATfXBBniJihxDrDHzQQvncMV1UwB_iuLP3iMAx_2Ysvd8Sg/exec", payload)
-            .then(() => {
-              this.toast("✅ Email sent successfully!", "linear-gradient(to right, #10b981, #22c55e)");
-              this.html = '';
-              this.email = '';
-            })
-            .catch(() => {
-              this.toast("❌ Failed to send email.", "linear-gradient(to right, #ef4444, #f87171)");
-            });
+          axios.post(
+            "https://script.google.com/macros/s/AKfycbx4-R1u3GNmuDd9t6PMMceATfXBBniJihxDrDHzQQvncMV1UwB_iuLP3iMAx_2Ysvd8Sg/exec",
+            payload,
+            {
+              headers: {
+                "Content-Type": "application/json"
+              }
+            }
+          )
+          .then((res) => {
+            console.log(res.data);
+            this.toast("✅ Email sent successfully!", "linear-gradient(to right, #10b981, #22c55e)");
+            this.html = '';
+            this.email = '';
+          })
+          .catch((error) => {
+            console.error(error);
+            this.toast("❌ Failed to send email.", "linear-gradient(to right, #ef4444, #f87171)");
+          });
         }
       }
     }).mount('#app');
