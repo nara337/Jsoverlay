@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSO Generator</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.7/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body class="bg-gray-100">
+
+  <div class="container mx-auto max-w-xl p-8" id="app">
+    <h1 class="text-2xl font-bold mb-4 text-center">JSO Generator</h1>
+    <p class="text-gray-600 mb-6 text-center">Encode your HTML and receive the JavaScript Overlay via email.</p>
+
+    <div class="mb-4">
+      <textarea v-model="html" class="w-full px-3 py-2 rounded-lg border border-gray-300 resize-none focus:outline-none focus:border-blue-500" placeholder="Enter your HTML here..." rows="6" spellcheck="false"></textarea>
+    </div>
+
+    <div class="mb-4">
+      <input v-model="email" type="email" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500" placeholder="Enter your email">
+    </div>
+
+    <div>
+      <button @click="submit" type="submit" class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200">
+        Submit
+      </button>
+    </div>
+
+    <footer class="text-center py-4 text-sm text-gray-500 mt-8">
+      &copy; 2025 <a href="https://narumicodingteam.blogspot.com/" target="_blank" class="text-blue-500 hover:underline">Indonesia Inside Code</a>. All rights reserved.
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          html: '',
+          email: '',
+        };
+      },
+      methods: {
+        toast(msg, color) {
+          Toastify({
+            text: msg,
+            duration: 3000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: color,
+          }).showToast();
+        },
+        validateEmail(email) {
+          const re = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+          return re.test(email);
+        },
+        submit() {
+          if (!this.html.trim()) {
+            this.toast("⚠️ Enter your HTML!", "linear-gradient(to right, #f43f5e, #f97316)");
+            return;
+          }
+
+          if (!this.validateEmail(this.email)) {
+            this.toast("⚠️ Enter a valid email!", "linear-gradient(to right, #f43f5e, #f97316)");
+            return;
+          }
+
+          const payload = {
+            html: this.html,
+            email: this.email
+          };
+
+          axios.post("https://script.google.com/macros/s/AKfycby_CB5qRf5tjz8JG_ojzMEvczN7-fKfGhXU7rDU8wc9-BPeASGdzzx7PthdH4k6y4BYAw/exec", payload)
+            .then(() => {
+              this.toast("✅ Email sent successfully!", "linear-gradient(to right, #10b981, #22c55e)");
+              this.html = '';
+              this.email = '';
+            })
+            .catch(() => {
+              this.toast("❌ Failed to send email.", "linear-gradient(to right, #ef4444, #f87171)");
+            });
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
